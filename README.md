@@ -96,7 +96,7 @@ void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anch
 
     for(int i = 0; i < tamano; i++) {
         if(datos[i] >= limiteInferior + anchoIntervalo) {
-            cout<<fixed<<setprecision(2)<<"["<<limiteInferior << ", " << limiteInferior + anchoIntervalo << ") | ";
+            cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | ";
             for(int j = 0; j < frecuencia[indiceFrecuencia]; j++) {
                 cout<<"*";
             }
@@ -119,30 +119,28 @@ void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anch
 int main() {
     Aula miAula = leerDatosDesdeArchivo("estaturas.csv");
 
-    int tamanoTotal = miAula.tamanoAula1 + miAula.tamanoAula2;
+    int tamanoTotal = 20;
     int numIntervalos = calcularNumIntervalos(tamanoTotal);
-    float datosTotales[tamanoTotal];
-    int index = 0;
+    float datosTotales[tamanoTotal * 2]; // Se multiplicó por 2 ya que se unirán los dos conjuntos de datos
 
-    for(int i = 0; i < miAula.tamanoAula1; i++) {
-        datosTotales[index++] = miAula.aula1[i];
-    }
-    for(int i = 0; i < miAula.tamanoAula2; i++) {
-        datosTotales[index++] = miAula.aula2[i];
+    // Unir los dos conjuntos de datos para obtener un solo arreglo
+    for (int i = 0; i < 20; i++) {
+        datosTotales[i] = miAula.aula1[i];
+        datosTotales[20 + i] = miAula.aula2[i];
     }
 
-    float rango = calcularRango(datosTotales, tamanoTotal);
+    float rango = calcularRango(datosTotales, tamanoTotal * 2);
     float anchoIntervalo = calcularAnchoIntervalo(rango, numIntervalos);
 
-    cout<<"Aula 1:"<<endl;
-    ordenarDatos(miAula.aula1, miAula.tamanoAula1);
-    crearTablaFrecuencias(miAula.aula1, miAula.tamanoAula1, numIntervalos, anchoIntervalo);
-    imprimirHistograma(miAula.aula1, miAula.tamanoAula1, numIntervalos, anchoIntervalo);
+    cout<<"Aula 1:"<< endl;
+    ordenarDatos(miAula.aula1, tamanoTotal);
+    crearTablaFrecuencias(miAula.aula1, tamanoTotal, numIntervalos, anchoIntervalo);
+    imprimirHistograma(miAula.aula1, tamanoTotal, numIntervalos, anchoIntervalo);
 
     cout<<"Aula 2:"<<endl;
-    ordenarDatos(miAula.aula2, miAula.tamanoAula2);
-    crearTablaFrecuencias(miAula.aula2, miAula.tamanoAula2, numIntervalos, anchoIntervalo);
-    imprimirHistograma(miAula.aula2, miAula.tamanoAula2, numIntervalos, anchoIntervalo);
+    ordenarDatos(miAula.aula2, tamanoTotal);
+    crearTablaFrecuencias(miAula.aula2, tamanoTotal, numIntervalos, anchoIntervalo);
+    imprimirHistograma(miAula.aula2, tamanoTotal, numIntervalos, anchoIntervalo);
 
     return 0;
 }
