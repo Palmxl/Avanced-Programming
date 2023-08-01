@@ -17,13 +17,14 @@ Claro, aquí tienes una interpretación con palabras diferentes de las limitacio
 4. **División entre cero**: Si por alguna razón el programa intenta dividir un número entre cero, se produce un error. Esto podría suceder si los datos no son suficientes para calcular ciertos valores, y en lugar de manejar esta situación, el programa simplemente falla, lo que puede ser frustrante para el usuario.
 
 **Soluciones Propuestas**:
+Para mejorar el programa y superar sus limitaciones, se proponen las siguientes soluciones:
 
-1. **Tamaño dinámico de los arreglos**: Se recomienda utilizar estructuras de datos dinámicas, como vectores o listas, en lugar de arreglos estáticos, para poder manejar conjuntos de datos de diferentes tamaños y evitar el límite de 20 estudiantes.
+En primer lugar, se sugiere utilizar estructuras de datos dinámicas, como vectores o listas, en lugar de arreglos estáticos con tamaño fijo. Esto permitirá adaptarse a diferentes cantidades de estudiantes en cada aula y eliminar la restricción de trabajar con un número limitado de datos. Con esta mejora, el programa podrá manejar conjuntos de datos más grandes y ser más flexible en su capacidad para analizar diversas cantidades de estudiantes.
 
-2. **Manejo de excepciones**: Implementar un manejo adecuado de excepciones al leer el archivo CSV, de modo que el programa pueda proporcionar mensajes de error apropiados al usuario si el archivo no existe o tiene un formato incorrecto, en lugar de generar errores inesperados.
+Además, se propone implementar un manejo adecuado de excepciones al leer el archivo CSV con los datos de estatura. Esto garantizará que el programa pueda lidiar de manera controlada con situaciones en las que el archivo no exista o tenga un formato incorrecto. En lugar de mostrar mensajes de error confusos o dejar de funcionar abruptamente, el programa proporcionará mensajes claros y amigables para guiar al usuario en la solución de problemas con el archivo de datos.
 
-3. **Optimización de cálculos**: Se sugiere calcular el número de intervalos y el ancho del intervalo una sola vez y luego reutilizar estos valores para ambos conjuntos de datos (Aula 1 y Aula 2), evitando así la redundancia de cálculos innecesarios.
+Otra solución propuesta es optimizar los cálculos realizados en el programa. Actualmente, se calculan repetidamente algunos valores, como el número de intervalos y el ancho del intervalo, para ambos conjuntos de datos. Para mejorar la eficiencia del programa, se puede calcular estos valores una sola vez y luego reutilizarlos para ambas aulas, evitando repeticiones innecesarias y acelerando el proceso de análisis.
 
-4. **Validación de divisiones**: Antes de realizar divisiones, se debe verificar si el divisor es igual a cero para evitar divisiones entre cero y, en su lugar, proporcionar un mensaje al usuario sobre la imposibilidad de realizar el cálculo correspondiente.
+Por último, se sugiere realizar una validación para evitar divisiones por cero durante los cálculos. Si el número de intervalos calculado es cero, esto podría causar errores en tiempo de ejecución. Para evitar esta situación, el programa verificará previamente si el divisor es igual a cero antes de realizar la división. Si el divisor es cero, se mostrará un mensaje explicativo al usuario, evitando problemas inesperados y brindando una experiencia más segura y comprensible.
 
-Implementar estas soluciones permitirá que el programa sea más flexible, robusto y eficiente, y mejorará la experiencia del usuario al manejar situaciones inesperadas y evitar errores. Además, eliminará las limitaciones del código actual y permitirá trabajar con conjuntos de datos de diferentes tamaños y formatos de archivo.
+Con la implementación de estas soluciones, el programa será más versátil, robusto y eficiente, lo que permitirá un análisis estadístico más amplio y una experiencia mejorada para el usuario al trabajar con diferentes tamaños de datos y situaciones inesperadas.
