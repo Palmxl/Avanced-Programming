@@ -8,20 +8,20 @@
 
 using namespace std;
 
-struct Aula {
+struct Aula{
     float aula1[20];
     float aula2[20];
     int tamanoAula1;
     int tamanoAula2;
 };
 
-Aula leerDatosDesdeArchivo(const string &rutaArchivo) {
+Aula leerDatosDesdeArchivo(const string &rutaArchivo){
     Aula miAula;
     ifstream archivo(rutaArchivo);
     string linea;
     float valor;
 
-if (!archivo) {
+if(!archivo){
         cerr<<"Error: El archivo no existe o no se puede abrir."<<endl;
         exit(1);
 
@@ -30,7 +30,7 @@ if (!archivo) {
     miAula.tamanoAula1 = 0;
     miAula.tamanoAula2 = 0;
 
-    while (getline(archivo, linea)) {
+    while(getline(archivo, linea)){
         istringstream ss(linea);
         string valorStr;
 
@@ -46,10 +46,10 @@ if (!archivo) {
     return miAula;
 }
 
-void ordenarDatos(float datos[], int tamano) {
-    for (int i = 0; i < tamano - 1; i++) {
-        for (int j = 0; j < tamano - i - 1; j++) {
-            if (datos[j] > datos[j + 1]) {
+void ordenarDatos(float datos[], int tamano){
+    for(int i = 0;i < tamano - 1;i++){
+        for(int j = 0;j < tamano - i - 1;j++){
+            if(datos[j] > datos[j + 1]){
                 float temp = datos[j];
                 datos[j] = datos[j + 1];
                 datos[j + 1] = temp;
@@ -58,25 +58,25 @@ void ordenarDatos(float datos[], int tamano) {
     }
 }
 
-int calcularNumIntervalos(int tamano) {
-    if (tamano == 0) {
-        cerr << "Error: No hay datos para calcular los intervalos." << endl;
+int calcularNumIntervalos(int tamano){
+    if(tamano == 0){
+        cerr<<"Error: No hay datos para calcular los intervalos."<<endl;
         exit(1);
     }
     return ceil(1 + 3.3 * log10(tamano));
 }
 
-float calcularAnchoIntervalo(float rango, int numIntervalos) {
-    if (numIntervalos == 0) {
-        cerr << "Error: No se puede calcular el ancho del intervalo debido a que el número de intervalos es cero." << endl;
+float calcularAnchoIntervalo(float rango, int numIntervalos){
+    if(numIntervalos == 0){
+        cerr<<"Error: No se puede calcular el ancho del intervalo debido a que el numero de intervalos es cero."<<endl;
         exit(1);
     }
     return rango / numIntervalos;
 }
 
-void crearTablaFrecuencias(float datos[], int tamano, int numIntervalos, float anchoIntervalo) {
+void crearTablaFrecuencias(float datos[], int tamano, int numIntervalos, float anchoIntervalo){
 
-    if (tamano == 0) {
+    if(tamano == 0){
         cerr<<"Error: No hay datos para crear la tabla de frecuencias."<<endl;
         exit(1);
     }
@@ -87,8 +87,8 @@ void crearTablaFrecuencias(float datos[], int tamano, int numIntervalos, float a
 
     cout<< "Intervalo | ni | Ni | fi | Fi"<<endl;
 
-    for (int i = 0; i < tamano; i++) {
-        if (datos[i] >= limiteInferior + anchoIntervalo) {
+    for(int i = 0;i < tamano;i++){
+        if(datos[i] >= limiteInferior + anchoIntervalo){
             cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | "
                  <<frecuencia[indiceFrecuencia]<<" | "<<i<<" | "
                  <<fixed<<setprecision(4)<<(static_cast<float>(frecuencia[indiceFrecuencia]) / tamano)<<" | "
@@ -106,17 +106,17 @@ void crearTablaFrecuencias(float datos[], int tamano, int numIntervalos, float a
          <<(static_cast<float>(tamano) / tamano)<<endl;
 }
 
-float calcularRango(float datos[], int tamano) {
-   if (tamano == 0) {
+float calcularRango(float datos[], int tamano){
+   if(tamano == 0){
         cerr<<"Error: No hay datos para calcular el rango."<<endl;
         exit(1);
     }
     return datos[tamano - 1] - datos[0];
 }
 
-void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anchoIntervalo) {
+void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anchoIntervalo){
 
-    if (tamano == 0) {
+    if(tamano == 0){
         cerr<<"Error: No hay datos para imprimir el histograma."<<endl;
         exit(1);
     }
@@ -127,10 +127,10 @@ void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anch
 
     cout<<"Histograma:"<<endl;
 
-    for (int i = 0; i < tamano; i++) {
-        if (datos[i] >= limiteInferior + anchoIntervalo) {
+    for(int i = 0;i < tamano;i++){
+        if(datos[i] >= limiteInferior + anchoIntervalo){
             cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | ";
-            for (int j = 0; j < frecuencia[indiceFrecuencia]; j++) {
+            for(int j = 0;j < frecuencia[indiceFrecuencia];j++){
                 cout<<"*";
             }
             cout<<endl;
@@ -142,13 +142,13 @@ void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anch
     }
 
     cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | ";
-    for (int j = 0; j < frecuencia[indiceFrecuencia]; j++) {
+    for(int j = 0;j < frecuencia[indiceFrecuencia];j++){
         cout<<"*";
     }
     cout<<endl;
 }
 
-int main() {
+int main(){
     Aula miAula = leerDatosDesdeArchivo("estaturas.csv");
 
     int tamanoTotal = miAula.tamanoAula1 + miAula.tamanoAula2;
@@ -156,10 +156,10 @@ int main() {
     float datosTotales[tamanoTotal];
     int index = 0;
     
-    for (int i = 0; i < miAula.tamanoAula1; i++) {
+    for(int i = 0;i < miAula.tamanoAula1;i++){
         datosTotales[index++] = miAula.aula1[i];
     }
-    for (int i = 0; i < miAula.tamanoAula2; i++) {
+    for(int i = 0;i < miAula.tamanoAula2;i++){
         datosTotales[index++] = miAula.aula2[i];
     }
 
