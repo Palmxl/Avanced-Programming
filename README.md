@@ -1,146 +1,29 @@
 # Avanced-Programming
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <math.h>
-#include <sstream>
+**Objetivo del Taller**:
 
-//Hecho por: Juan Martín Sánchez - Juan Tellez - Juan Esteban Valencia - Santiago Martínez - Nicolás Álvarez//
+El objetivo de este taller es utilizar un programa en C++ para analizar dos conjuntos de datos que representan la estatura de los estudiantes en dos aulas diferentes. Queremos obtener información estadística relevante sobre estos datos, como el rango de estaturas, el número de intervalos adecuado para presentarlos en un histograma y las frecuencias relativas. Además, deseamos mostrar gráficamente los resultados mediante histogramas para visualizar de forma clara la distribución de estaturas en cada aula.
 
-using namespace std;
+**Limitaciones del Código**:
+Se interpretó acerca de las limitaciones establecidas lo siguiente:
 
-struct Aula {
-    float aula1[20];
-    float aula2[20];
-};
+Claro, aquí tienes una interpretación con palabras diferentes de las limitaciones:
 
-Aula leerDatosDesdeArchivo(const string &rutaArchivo) {
-    Aula miAula;
-    ifstream archivo(rutaArchivo);
-    string linea;
-    int i = 0;
+1. **Tamaño fijo de los arreglos**: El programa actual solo puede manejar un número limitado de estudiantes en cada aula. Esto significa que si tenemos más de ese número, el programa no podrá procesarlos correctamente, lo que podría limitar el análisis a un grupo pequeño de datos.
 
-    getline(archivo, linea);
+2. **Manejo de errores**: Si el archivo con los datos no se encuentra o tiene un formato inesperado, el programa no sabrá cómo lidiar con esa situación y podría mostrar mensajes de error confusos o dejar de funcionar adecuadamente, lo que dificulta su uso y comprensión.
 
-    while (getline(archivo, linea)) {
-        istringstream ss(linea);
-        string valor;
+3. **Cálculos repetidos**: El programa realiza algunos cálculos más de una vez innecesariamente. Esto podría hacer que el programa se ejecute más lentamente de lo necesario y consuma más recursos de la computadora de los que debería, lo que podría afectar su rendimiento general.
 
-        getline(ss, valor, ',');
-        miAula.aula1[i] = stof(valor);
+4. **División entre cero**: Si por alguna razón el programa intenta dividir un número entre cero, se produce un error. Esto podría suceder si los datos no son suficientes para calcular ciertos valores, y en lugar de manejar esta situación, el programa simplemente falla, lo que puede ser frustrante para el usuario.
 
-        getline(ss, valor, ',');
-        miAula.aula2[i] = stof(valor);
-        i++;
-    }
-    archivo.close();
-    return miAula;
-}
+**Soluciones Propuestas**:
 
-void ordenarDatos(float datos[], int tamano) {
-    for(int i = 0; i < tamano - 1; i++) {
-        for(int j = 0; j < tamano - i - 1; j++) {
-            if(datos[j] > datos[j + 1]) {
-                float temp = datos[j];
-                datos[j] = datos[j + 1];
-                datos[j + 1] = temp;
-            }
-        }
-    }
-}
+1. **Tamaño dinámico de los arreglos**: Se recomienda utilizar estructuras de datos dinámicas, como vectores o listas, en lugar de arreglos estáticos, para poder manejar conjuntos de datos de diferentes tamaños y evitar el límite de 20 estudiantes.
 
-int calcularNumIntervalos(int tamano) {
-    return ceil(1 + 3.3 * log10(tamano));
-}
+2. **Manejo de excepciones**: Implementar un manejo adecuado de excepciones al leer el archivo CSV, de modo que el programa pueda proporcionar mensajes de error apropiados al usuario si el archivo no existe o tiene un formato incorrecto, en lugar de generar errores inesperados.
 
-float calcularAnchoIntervalo(float rango, int numIntervalos) {
-    return rango / numIntervalos;
-}
+3. **Optimización de cálculos**: Se sugiere calcular el número de intervalos y el ancho del intervalo una sola vez y luego reutilizar estos valores para ambos conjuntos de datos (Aula 1 y Aula 2), evitando así la redundancia de cálculos innecesarios.
 
-void crearTablaFrecuencias(float datos[], int tamano, int numIntervalos, float anchoIntervalo) {
-    int frecuencia[numIntervalos] = {0};
-    float limiteInferior = datos[0];
-    int indiceFrecuencia = 0;
+4. **Validación de divisiones**: Antes de realizar divisiones, se debe verificar si el divisor es igual a cero para evitar divisiones entre cero y, en su lugar, proporcionar un mensaje al usuario sobre la imposibilidad de realizar el cálculo correspondiente.
 
-    cout<<"Intervalo | ni | Ni | fi | Fi"<<endl;
-
-    for(int i = 0; i < tamano; i++) {
-        if(datos[i] >= limiteInferior+anchoIntervalo) {
-            cout<<fixed<<setprecision(2)<<"["<< limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | "
-                <<frecuencia[indiceFrecuencia]<<" | "<<i<<" | "
-                <<fixed<<setprecision(4)<<(static_cast<float>(frecuencia[indiceFrecuencia]) / tamano)<<" | "
-                <<(static_cast<float>(i) / tamano)<< endl;
-
-            limiteInferior += anchoIntervalo;
-            indiceFrecuencia++;
-        }
-        frecuencia[indiceFrecuencia]++;
-    }
-
-    cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | "
-        <<frecuencia[indiceFrecuencia]<<" | "<<tamano<<" | "
-        <<fixed<<setprecision(4)<<(static_cast<float>(frecuencia[indiceFrecuencia]) / tamano)<<" | "
-        <<(static_cast<float>(tamano) / tamano)<<endl;
-}
-
-float calcularRango(float datos[], int tamano) {
-    return datos[tamano - 1] - datos[0];
-}
-
-void imprimirHistograma(float datos[], int tamano, int numIntervalos, float anchoIntervalo) {
-    int frecuencia[numIntervalos] = {0};
-    float limiteInferior = datos[0];
-    int indiceFrecuencia = 0;
-
-    cout<<"Histograma:"<<endl;
-
-    for(int i = 0; i < tamano; i++) {
-        if(datos[i] >= limiteInferior + anchoIntervalo) {
-            cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior + anchoIntervalo<<") | ";
-            for(int j = 0; j < frecuencia[indiceFrecuencia]; j++) {
-                cout<<"*";
-            }
-            cout<<endl;
-
-            limiteInferior += anchoIntervalo;
-            indiceFrecuencia++;
-        }
-        frecuencia[indiceFrecuencia]++;
-    }
-
-    
-    cout<<fixed<<setprecision(2)<<"["<<limiteInferior<<", "<<limiteInferior+anchoIntervalo<<") | ";
-    for(int j = 0; j < frecuencia[indiceFrecuencia]; j++) {
-        cout<<"*";
-    }
-    cout<<endl;
-}
-
-int main() {
-    Aula miAula = leerDatosDesdeArchivo("estaturas.csv");
-
-    int tamanoTotal = 20;
-    int numIntervalos = calcularNumIntervalos(tamanoTotal);
-    float datosTotales[tamanoTotal * 2]; // Se multiplicó por 2 ya que se unirán los dos conjuntos de datos
-
-    // Unir los dos conjuntos de datos para obtener un solo arreglo
-    for (int i = 0; i < 20; i++) {
-        datosTotales[i] = miAula.aula1[i];
-        datosTotales[20 + i] = miAula.aula2[i];
-    }
-
-    float rango = calcularRango(datosTotales, tamanoTotal * 2);
-    float anchoIntervalo = calcularAnchoIntervalo(rango, numIntervalos);
-
-    cout<<"Aula 1:"<< endl;
-    ordenarDatos(miAula.aula1, tamanoTotal);
-    crearTablaFrecuencias(miAula.aula1, tamanoTotal, numIntervalos, anchoIntervalo);
-    imprimirHistograma(miAula.aula1, tamanoTotal, numIntervalos, anchoIntervalo);
-
-    cout<<"Aula 2:"<<endl;
-    ordenarDatos(miAula.aula2, tamanoTotal);
-    crearTablaFrecuencias(miAula.aula2, tamanoTotal, numIntervalos, anchoIntervalo);
-    imprimirHistograma(miAula.aula2, tamanoTotal, numIntervalos, anchoIntervalo);
-
-    return 0;
-}
+Implementar estas soluciones permitirá que el programa sea más flexible, robusto y eficiente, y mejorará la experiencia del usuario al manejar situaciones inesperadas y evitar errores. Además, eliminará las limitaciones del código actual y permitirá trabajar con conjuntos de datos de diferentes tamaños y formatos de archivo.
