@@ -131,7 +131,7 @@ int main() {
     float rango = calcularRango(datosTotales, tamanoTotal * 2);
     float anchoIntervalo = calcularAnchoIntervalo(rango, numIntervalos);
 
-    cout<<"Aula 1:"<< endl;
+    cout<<"Aula 1:"<<endl;
     ordenarDatos(miAula.aula1, tamanoTotal);
     crearTablaFrecuencias(miAula.aula1, tamanoTotal, numIntervalos, anchoIntervalo);
     imprimirHistograma(miAula.aula1, tamanoTotal, numIntervalos, anchoIntervalo);
