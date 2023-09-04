@@ -1,1 +1,130 @@
+//Juan Sebastian Tellez , Juan Martin sanchez, Juanesteban Valencia, Santiago martinez
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <cstdlib>
 
+using namespace std;
+
+// Estructura para almacenar los datos de una simulación
+struct Simulacion {
+    double temperatura;
+    double irradiancia;
+    string tension;
+    string corriente;
+    double PMM;
+    double potencia;
+};
+
+struct DatosFinales {
+    double temperatura2;
+    double irradiancia2;
+    string tension2;
+    string corriente2;
+    double PMM2;
+    double potencia2;
+};
+
+Simulacion datos[205];
+DatosFinales datosFinales[1000];
+int contadorFinal = -1;
+
+void inicializaEstructura();
+void archivoFinal();
+void puntoMaximo();
+
+void leerArchivo() {
+    
+    int ii = 0;
+
+    for (int y = 15; y <= 45; y++) {
+
+        for (int i = 400; i <= 1000; i += 20) {
+
+            stringstream ss;
+            ss << "OutputPV_T" << y << "_G" << i << ".txt";
+            string nombreArchivo = ss.str();
+
+            contadorFinal++;
+            ifstream archivo(nombreArchivo.c_str());
+
+            if (!archivo.is_open()) {
+                cout << "No se pudo abrir el archivo: " << nombreArchivo << endl;
+            } else {
+                string linea;
+                ii = 0;
+                inicializaEstructura();
+                while (getline(archivo, linea)) {
+                    stringstream ss(linea);
+                    string valor1, valor2;
+
+                    if (getline(ss, valor1, ',') && getline(ss, valor2, ',')) {
+                        datos[ii].tension = valor1; // Almacenar como una cadena
+                        datos[ii].corriente = valor2; // Almacenar como una cadena
+                        datos[ii].irradiancia = y;
+                        datos[ii].temperatura = i;
+                        double tension = atof(valor1.c_str()); // Convertir a double
+                        double corriente = atof(valor2.c_str()); // Convertir a double
+                        datos[ii].potencia = tension * corriente;
+                    }
+                    ii++;
+                }
+                puntoMaximo();
+                archivo.close();
+            }
+        }
+    }
+}
+
+void puntoMaximo() {
+    double mayor;
+    mayor = -9;
+
+    for (int y = 0; y <= 205; y++) {
+        if (datos[y].potencia > mayor) {
+            mayor = datos[y].potencia;
+            datos[y].PMM = mayor;
+
+            datosFinales[contadorFinal].potencia2 = datos[y].potencia;
+            datosFinales[contadorFinal].irradiancia2 = datos[y].irradiancia;
+            datosFinales[contadorFinal].temperatura2 = datos[y].temperatura;
+            datosFinales[contadorFinal].PMM2 = datos[y].PMM;
+        }
+    }
+    cout << "Contador_Final: " << contadorFinal << endl;
+}
+
+void inicializaEstructura() {
+    for (int i = 0; i <= 205; i++) {
+        datos[i].potencia = 0;
+        datos[i].irradiancia = 0;
+        datos[i].temperatura = 0;
+        datos[i].PMM = 0;
+    }
+}
+
+void archivoFinal() {
+
+    ofstream archivo2("Resultadofinal.txt");
+
+    if (!archivo2.is_open()) {
+        cout << "No se pudo abrir el archivo: Resultadofinal.txt" << endl;
+    } else {
+        archivo2 << "Potencia, irradiancia, temperatura" << endl;
+       
+        for (int contadorFinal = 0; contadorFinal <= 960; contadorFinal++) {
+            archivo2 << datosFinales[contadorFinal].potencia2 << "," << datosFinales[contadorFinal].irradiancia2 << ","
+                    << datosFinales[contadorFinal].temperatura2 << endl;
+        }
+        cout << "Archivo 'Resultadofinal.txt' creado exitosamente." << endl;
+        archivo2.close();
+    }
+}
+
+int main() {
+    leerArchivo();
+    archivoFinal();
+    return 0;
+}
