@@ -1,1 +1,133 @@
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <math.h>
+#include <sstream>
+#include <vector>
 
+using namespace std;
+
+struct Aula {
+    vector<float> aula1;
+    vector<float> aula2;
+};
+
+Aula leerDatosDesdeArchivo(const string &rutaArchivo) {
+    Aula miAula;
+    ifstream archivo(rutaArchivo);
+    string linea;
+    int i = 0;
+
+    getline(archivo, linea); // Descartar la primera línea
+
+    while (getline(archivo, linea)) {
+        istringstream ss(linea);
+        string valor;
+
+        getline(ss, valor, ',');
+        miAula.aula1.push_back(stof(valor));
+
+        getline(ss, valor, ',');
+        miAula.aula2.push_back(stof(valor));
+        i++;
+    }
+    return miAula;
+}
+
+void ordenarDatos(vector<float> &datos) {
+    sort(datos.begin(), datos.end());
+}
+
+int calcularNumIntervalos(int tamano) {
+    return ceil(1 + 3.3 * log10(tamano));
+}
+
+float calcularAnchoIntervalo(float rango, int numIntervalos) {
+    return rango / numIntervalos;
+}
+
+float calcularRango(const vector<float> &datos) {
+    return *max_element(datos.begin(), datos.end()) - *min_element(datos.begin(), datos.end());
+}
+
+void crearTablaFrecuencias(const vector<float> &datos, int numIntervalos, float anchoIntervalo) {
+    int tamano = datos.size();
+    vector<int> frecuencia(numIntervalos, 0);
+    int intervaloInicio = floor(datos[0] / anchoIntervalo) * anchoIntervalo;
+
+    for (int i = 0; i < tamano; i++) {
+        int intervalo = floor((datos[i] - intervaloInicio) / anchoIntervalo);
+        frecuencia[intervalo]++;
+    }
+
+    cout << "Intervalo | ni | Ni | fi | Fi" << endl;
+    int acumulado = 0;
+
+    for (int i = 0; i < numIntervalos; i++) {
+        acumulado += frecuencia[i];
+        float fi = static_cast<float>(frecuencia[i]) / tamano * 100;
+        float Fi = static_cast<float>(acumulado) / tamano * 100;
+
+        cout << fixed << setprecision(2);
+        cout << setw(9) << intervaloInicio + i * anchoIntervalo << " | ";
+        cout << setw(2) << frecuencia[i] << " | ";
+        cout << setw(2) << acumulado << " | ";
+        cout << setw(5) << fi << " | ";
+        cout << setw(5) << Fi << endl;
+    }
+}
+
+void imprimirHistograma(const vector<float> &datos, int numIntervalos, float anchoIntervalo) {
+    int tamano = datos.size();
+    vector<int> frecuencia(numIntervalos, 0);
+    int intervaloInicio = floor(datos[0] / anchoIntervalo) * anchoIntervalo;
+
+    for (int i = 0; i < tamano; i++) {
+        int intervalo = floor((datos[i] - intervaloInicio) / anchoIntervalo);
+        frecuencia[intervalo]++;
+    }
+
+    for (int i = 0; i < numIntervalos; i++) {
+        cout << setw(9) << intervaloInicio + i * anchoIntervalo << " | ";
+
+        for (int j = 0; j < frecuencia[i]; j++) {
+            cout << "*";
+        }
+
+        cout << endl;
+    }
+}
+
+int main() {
+    string rutaArchivo = "estaturas.csv"; // Nombre correcto del archivo
+    Aula miAula = leerDatosDesdeArchivo(rutaArchivo);
+
+    ordenarDatos(miAula.aula1);
+    ordenarDatos(miAula.aula2);
+
+    int tamanoAula1 = miAula.aula1.size();
+    int tamanoAula2 = miAula.aula2.size();
+
+    float rangoAula1 = calcularRango(miAula.aula1);
+    float rangoAula2 = calcularRango(miAula.aula2);
+
+    int numIntervalosAula1 = calcularNumIntervalos(tamanoAula1);
+    int numIntervalosAula2 = calcularNumIntervalos(tamanoAula2);
+
+    float anchoIntervaloAula1 = calcularAnchoIntervalo(rangoAula1, numIntervalosAula1);
+    float anchoIntervaloAula2 = calcularAnchoIntervalo(rangoAula2, numIntervalosAula2);
+
+    cout << "Tabla de Frecuencias Aula 1:" << endl;
+    crearTablaFrecuencias(miAula.aula1, numIntervalosAula1, anchoIntervaloAula1);
+
+    cout << endl << "Tabla de Frecuencias Aula 2:" << endl;
+    crearTablaFrecuencias(miAula.aula2, numIntervalosAula2, anchoIntervaloAula2);
+
+    cout << endl << "Histograma Aula 1:" << endl;
+    imprimirHistograma(miAula.aula1, numIntervalosAula1, anchoIntervaloAula1);
+
+    cout << endl << "Histograma Aula 2:" << endl;
+    imprimirHistograma(miAula.aula2, numIntervalosAula2, anchoIntervaloAula2);
+
+    return 0;
+}
