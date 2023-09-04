@@ -1,4 +1,4 @@
-#PROYECTO 1#
+# PROYECTO 1
 Informe Proyecto 1 -  Regresión Lineal Grupo 1 
 
 1. Descripción detallada del algoritmo implementado:
