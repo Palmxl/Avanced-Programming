@@ -1,1 +1,96 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include <cmath>
 
+using namespace std;
+
+const int numIntervalos = 10;
+
+struct DataPoint {
+    double x;
+    double y;
+};
+
+vector<DataPoint> leerDatos(const string& archivo){
+    vector<DataPoint> datos;
+    ifstream file(archivo.c_str());
+    if(!file.is_open()){
+        cerr<<"No se pudo abrir el archivo "<<archivo<<endl;
+        exit(1);
+    }
+
+    string line;
+    while(getline(file, line)){
+        stringstream ss(line);
+        double x, y;
+        char delimiter;
+        ss>>x>>delimiter>>y;
+        datos.push_back({x, y});
+    }
+
+    file.close();
+    return datos;
+}
+
+pair<double, double> regresionMinimosCuadrados(const vector<DataPoint>& datos){
+    double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumX2 = 0.0;
+    int n = datos.size();
+
+    for(const auto& punto : datos){
+        sumX += punto.x;
+        sumY += punto.y;
+        sumXY += punto.x * punto.y;
+        sumX2 += punto.x * punto.x;
+    }
+
+    double a = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    double b = (sumY - a * sumX) / n;
+
+    return {a, b};
+}
+
+vector<double> predecir(const vector<DataPoint>& datos, double a, double b){
+    vector<double> predicciones;
+    for(const auto& punto : datos){
+        double prediccion = a * punto.x + b;
+        predicciones.push_back(prediccion);
+    }
+    return predicciones;
+}
+
+double calcularErrorCuadraticoMedio(const vector<DataPoint>& datos, const vector<double>& predicciones){
+    double sumaErrores = 0.0;
+    int n = datos.size();
+
+    for(int i = 0; i < n; ++i){
+        double error = predicciones[i] - datos[i].y;
+        sumaErrores += error * error;
+    }
+
+    return sumaErrores / n;
+}
+
+int main(){
+    string archivo = "datos.csv";
+
+    vector<DataPoint> datos = leerDatos(archivo);
+
+    pair<double, double> parametros = regresionMinimosCuadrados(datos);
+    double a = parametros.first;
+    double b = parametros.second;
+
+    vector<double> predicciones = predecir(datos, a, b);
+
+    double errorCuadraticoMedio = calcularErrorCuadraticoMedio(datos, predicciones);
+
+    ofstream resultados("resultados.txt");
+    resultados<<"Parametros óptimos de la regresion lineal:"<<endl;
+    resultados<<"a: "<<a<<endl;
+    resultados<<"b: "<<b<<endl;
+    resultados<<"Error Cuadrático Medio: "<<errorCuadraticoMedio<<endl;
+    resultados.close();
+
+    return 0;
+}
