@@ -8,13 +8,13 @@ using namespace std;
 
 const int numIntervalos = 10;
 
-struct DataPoint {
+struct Datos {
     double x;
     double y;
 };
 
-vector<DataPoint> leerDatos(const string& archivo){
-    vector<DataPoint> datos;
+vector<Datos> leerDatos(const string& archivo){
+    vector<Datos> datos;
     ifstream file(archivo.c_str());
     if(!file.is_open()){
         cerr<<"No se pudo abrir el archivo "<<archivo<<endl;
@@ -34,7 +34,7 @@ vector<DataPoint> leerDatos(const string& archivo){
     return datos;
 }
 
-pair<double, double> regresionMinimosCuadrados(const vector<DataPoint>& datos){
+pair<double, double> regresionMinimosCuadrados(const vector<Datos>& datos){
     double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumX2 = 0.0;
     int n = datos.size();
 
@@ -51,7 +51,7 @@ pair<double, double> regresionMinimosCuadrados(const vector<DataPoint>& datos){
     return {a, b};
 }
 
-vector<double> predecir(const vector<DataPoint>& datos, double a, double b){
+vector<double> predecir(const vector<Datos>& datos, double a, double b){
     vector<double> predicciones;
     for(const auto& punto : datos){
         double prediccion = a * punto.x + b;
@@ -60,7 +60,7 @@ vector<double> predecir(const vector<DataPoint>& datos, double a, double b){
     return predicciones;
 }
 
-double calcularErrorCuadraticoMedio(const vector<DataPoint>& datos, const vector<double>& predicciones){
+double calcularErrorCuadraticoMedio(const vector<Datos>& datos, const vector<double>& predicciones){
     double sumaErrores = 0.0;
     int n = datos.size();
 
@@ -75,7 +75,7 @@ double calcularErrorCuadraticoMedio(const vector<DataPoint>& datos, const vector
 int main(){
     string archivo = "datos.csv";
 
-    vector<DataPoint> datos = leerDatos(archivo);
+    vector<Datos> datos = leerDatos(archivo);
 
     pair<double, double> parametros = regresionMinimosCuadrados(datos);
     double a = parametros.first;
